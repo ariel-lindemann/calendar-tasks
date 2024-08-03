@@ -11,7 +11,7 @@ def read_config(file_path: str):
 
 def validate_date(date_str: str, fallback: datetime) -> datetime:
     try:
-        valid_date = datetime.strptime(date_str, "%Y-&m-%d")
+        valid_date = datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError as e:
         print(e)
         print(f"Can't assign value {date_str}. Assinging fallback date {fallback}")
