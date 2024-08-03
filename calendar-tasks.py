@@ -10,6 +10,9 @@ def read_config(file_path: str):
 
 
 def validate_config(config: dict):
+    if "calendar_name" not in config:
+        config["calendar_name"] = "recurring_appointments"
+
     if "start_date" not in config:
         config["start_date"] = datetime.today()
     else:
@@ -34,6 +37,7 @@ def validate_config(config: dict):
 config = read_config("config.json")
 config = validate_config(config)
 
+calendar_name = config["calendar_name"]
 appointment_names = config["appointment_names"]
 
 start_date = config["start_date"]
@@ -58,7 +62,7 @@ while current_date <= end_date:
     current_date += recurrence
     index += 1
 
-with open("recurring-appointments.ics", "w") as file:
+with open(f"{calendar_name}.ics", "w") as file:
     file.writelines(calendar)
 
-print("Calendar file 'recurring_appointments.ics' created successfully.")
+print(f"Calendar file '{calendar_name}.ics' created successfully.")
