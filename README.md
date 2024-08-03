@@ -26,6 +26,15 @@ Run the API
 fastapi run calendar-tasks.py
 ```
 
+### Docker
+
+If you want to start the app inside Docker, run:
+
+```sh
+docker build . --tag calendar-tasks
+docker run -p 8000:8000 calendar-tasks
+```
+
 ## Usage
 
 Send a POST request to the `/generate_calendar` endpoint, with the following json body:
