@@ -51,7 +51,7 @@ config = read_config("config.json")
 config = validate_config(config)
 
 
-def generate_calendar(config):
+def generate_calendar(config: dict) -> Calendar:
     appointment_names = config["appointment_names"]
 
     start_date = config["start_date"]
