@@ -1,6 +1,11 @@
 import json
-from ics import Calendar, Event
 from datetime import datetime, timedelta
+
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
+from ics import Calendar, Event
+
+app = FastAPI()
 
 
 def read_config(file_path: str):
@@ -47,11 +52,9 @@ def validate_config(config: dict):
     return config
 
 
-config = read_config("config.json")
-config = validate_config(config)
+def generate_calendar_file(config: dict) -> str:
+    config = validate_config(config)
 
-
-def generate_calendar(config: dict) -> Calendar:
     appointment_names = config["appointment_names"]
 
     start_date = config["start_date"]
@@ -73,13 +76,31 @@ def generate_calendar(config: dict) -> Calendar:
 
         current_date += recurrence
         index += 1
-    return calendar
+
+    calendar_file_path = f"{config['calendar_name']}.ics"
+
+    with open(calendar_file_path, "w") as file:
+        file.writelines(calendar)
+
+    print(f"Calendar file {calendar_file_path} created successfully.")
+
+    return calendar_file_path
 
 
-calendar = generate_calendar(config)
-calendar_name = config["calendar_name"]
+@app.post("/generate_calendar/")
+async def generate_calendar(config: dict):
+    try:
+        path = generate_calendar_file(config)
+        return FileResponse(
+            path, media_type="text/calendar", filename=f"{config['calendar_name']}.ics"
+        )
 
-with open(f"{calendar_name}.ics", "w") as file:
-    file.writelines(calendar)
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
-print(f"Calendar file '{calendar_name}.ics' created successfully.")
+
+@app.get("/")
+def read_root():
+    return {
+        "message": "Welcome to the Recurring Appointments Calendar API! Use the /generate-calendar endpoint to generate a calendar file."
+    }
