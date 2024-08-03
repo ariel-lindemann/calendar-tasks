@@ -50,30 +50,34 @@ def validate_config(config: dict):
 config = read_config("config.json")
 config = validate_config(config)
 
+
+def generate_calendar(config):
+    appointment_names = config["appointment_names"]
+
+    start_date = config["start_date"]
+    end_date = config["end_date"]
+
+    recurrence = timedelta(days=config["recurrence_interval_days"])
+
+    calendar = Calendar()
+
+    current_date = start_date
+    index = 0
+
+    while current_date <= end_date:
+        event = Event()
+        event.name = appointment_names[index % len(appointment_names)]
+        event.begin = current_date
+        event.duration = timedelta(days=1)
+        calendar.events.add(event)
+
+        current_date += recurrence
+        index += 1
+    return calendar
+
+
+calendar = generate_calendar(config)
 calendar_name = config["calendar_name"]
-appointment_names = config["appointment_names"]
-
-start_date = config["start_date"]
-end_date = config["end_date"]
-
-recurrence = timedelta(days=config["recurrence_interval_days"])
-
-num_appointments = 20
-
-calendar = Calendar()
-
-current_date = start_date
-index = 0
-
-while current_date <= end_date:
-    event = Event()
-    event.name = appointment_names[index % len(appointment_names)]
-    event.begin = current_date
-    event.duration = timedelta(days=1)
-    calendar.events.add(event)
-
-    current_date += recurrence
-    index += 1
 
 with open(f"{calendar_name}.ics", "w") as file:
     file.writelines(calendar)
