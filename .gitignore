@@ -1,1 +1,3 @@
 calendar-tasks-venv/
+__pycache__
+*.ics
