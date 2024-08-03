@@ -48,8 +48,8 @@ curl -X POST "http://localhost:8000/generate_calendar/" -H "Content-Type: applic
     "end_date": "2024-12-31",
     "recurrence_interval_days": 14
 }'
+```
 
 ## Documentation
 
 You can take a look at the OpenAPI specification of the enpoints at `localhost:8000/docs`
-```
