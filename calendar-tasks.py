@@ -9,6 +9,17 @@ def read_config(file_path: str):
     return config
 
 
+def validate_date(date_str: str, fallback: datetime) -> datetime:
+    try:
+        valid_date = datetime.strptime(date_str, "%Y-&m-%d")
+    except ValueError as e:
+        print(e)
+        print(f"Can't assign value {date_str}. Assinging fallback date {fallback}")
+        valid_date = fallback
+
+    return valid_date
+
+
 def validate_config(config: dict):
     if "calendar_name" not in config:
         config["calendar_name"] = "recurring_appointments"
@@ -16,12 +27,14 @@ def validate_config(config: dict):
     if "start_date" not in config:
         config["start_date"] = datetime.today()
     else:
-        config["start_date"] = datetime.strptime(config["start_date"], "%Y-%m-%d")
+        config["start_date"] = validate_date(config["start_date"], datetime.today())
 
     if "end_date" not in config:
         config["end_date"] = config["start_date"] + timedelta(days=365)
     else:
-        date = datetime.strptime(config["end_date"], "%Y-%m-%d")
+        date = validate_date(
+            config["end_date"], config["start_date"] + timedelta(days=365)
+        )
         config["end_date"] = (
             date
             if date >= config["start_date"]
