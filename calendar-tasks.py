@@ -25,44 +25,47 @@ def validate_date(date_str: str, fallback: datetime) -> datetime:
     return valid_date
 
 
-def validate_config(config: dict):
+def validate_sequence(sequence: dict) -> dict:
+    if "start_date" not in sequence:
+        sequence["start_date"] = datetime.today()
+    else:
+        sequence["start_date"] = validate_date(sequence["start_date"], datetime.today())
+
+    if "end_date" not in sequence:
+        sequence["end_date"] = sequence["start_date"] + timedelta(days=365)
+    else:
+        date = validate_date(
+            sequence["end_date"], sequence["start_date"] + timedelta(days=365)
+        )
+        sequence["end_date"] = (
+            date
+            if date >= sequence["start_date"]
+            else sequence["start_date"] + timedelta(days=365)
+        )
+
+    if "recurrence_interval_days" not in sequence:
+        sequence["recurrence_interval_days"] = 1
+
+    return sequence
+
+
+def validate_config(config: dict) -> dict:
     if "calendar_name" not in config:
         config["calendar_name"] = "recurring_appointments"
 
-    if "start_date" not in config:
-        config["start_date"] = datetime.today()
-    else:
-        config["start_date"] = validate_date(config["start_date"], datetime.today())
-
-    if "end_date" not in config:
-        config["end_date"] = config["start_date"] + timedelta(days=365)
-    else:
-        date = validate_date(
-            config["end_date"], config["start_date"] + timedelta(days=365)
-        )
-        config["end_date"] = (
-            date
-            if date >= config["start_date"]
-            else config["start_date"] + timedelta(days=365)
-        )
-
-    if "recurrence_interval_days" not in config:
-        config["recurrence_interval_days"] = 1
+    for sequence in config["sequences"]:
+        sequence = validate_sequence(sequence)
 
     return config
 
 
-def generate_calendar_file(config: dict) -> str:
-    config = validate_config(config)
+def write_sequence(sequence: dict, calendar: Calendar) -> Calendar:
+    appointment_names = sequence["appointment_names"]
 
-    appointment_names = config["appointment_names"]
+    start_date = sequence["start_date"]
+    end_date = sequence["end_date"]
 
-    start_date = config["start_date"]
-    end_date = config["end_date"]
-
-    recurrence = timedelta(days=config["recurrence_interval_days"])
-
-    calendar = Calendar()
+    recurrence = timedelta(days=sequence["recurrence_interval_days"])
 
     current_date = start_date
     index = 0
@@ -76,6 +79,17 @@ def generate_calendar_file(config: dict) -> str:
 
         current_date += recurrence
         index += 1
+
+    return calendar
+
+
+def generate_calendar_file(config: dict) -> str:
+    config = validate_config(config)
+
+    calendar = Calendar()
+
+    for sequence in config["sequences"]:
+        calendar = write_sequence(sequence, calendar)
 
     calendar_file_path = f"{config['calendar_name']}.ics"
 

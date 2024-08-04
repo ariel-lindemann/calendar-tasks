@@ -3,7 +3,7 @@
 This project provides a FastAPI-based API for generating calendar files with recurring appointments. Users can send configuration details through a POST request to receive an .ics calendar file as a response.
 Features
 
-+ Accepts a list of appointment names, start date, end date, and recurrence interval.
++ Accepts a list of **sequences** which consist of appointment names, start date, end date, and recurrence interval.
 + Generates a calendar file with recurring events.
 + Ensures valid configurations with fallback to default values.
 + Serves the generated calendar file for download.
@@ -40,10 +40,28 @@ docker run -p 8000:8000 calendar-tasks
 Send a POST request to the `/generate_calendar` endpoint, with the following json body:
 ```json
 {
-    "appointment_names": ["Meeting A", "Meeting B", "Meeting C"],
-    "start_date": "2024-01-01",
-    "end_date": "2024-12-31",
-    "recurrence_interval_days": 14
+    "calendar_name": "recurring_appointments",
+    "sequences": [
+        {
+            "appointment_names": [
+                "Appointment 1",
+                "Appointment 2",
+                "Appointment 3"
+            ],
+            "start_date": "2024-08-06",
+            "end_date": "2024-09-30",
+            "recurrence_interval_days": 14
+        },
+        {
+            "appointment_names": [
+                "Appointment 1",
+                "Appointment 3"
+            ],
+            "start_date": "2024-10-02",
+            "end_date": "2024-09-31",
+            "recurrence_interval_days": 7
+        }
+    ]
 }
 ```
 You will receive an .ics calendar file in response.
@@ -52,10 +70,28 @@ Using `curl`:
 
 ```sh
 curl -X POST "http://localhost:8000/generate_calendar/" -H "Content-Type: application/json" -d '{
-    "appointment_names": ["Meeting A", "Meeting B", "Meeting C"],
-    "start_date": "2024-01-01",
-    "end_date": "2024-12-31",
-    "recurrence_interval_days": 14
+    "calendar_name": "recurring_appointments",
+    "sequences": [
+        {
+            "appointment_names": [
+                "Appointment 1",
+                "Appointment 2",
+                "Appointment 3"
+            ],
+            "start_date": "2024-08-06",
+            "end_date": "2024-09-30",
+            "recurrence_interval_days": 14
+        },
+        {
+            "appointment_names": [
+                "Appointment 1",
+                "Appointment 3"
+            ],
+            "start_date": "2024-10-02",
+            "end_date": "2024-09-31",
+            "recurrence_interval_days": 7
+        }
+    ]
 }'
 ```
 
