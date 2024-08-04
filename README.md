@@ -23,7 +23,7 @@ pip install -r requrements.txt
 
 Run the API
 ```sh
-fastapi run calendar-tasks.py
+fastapi run app/calendar-tasks.py
 ```
 
 ### Docker
