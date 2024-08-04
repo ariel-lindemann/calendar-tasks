@@ -1,9 +1,9 @@
 import json
-from datetime import datetime, timedelta
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
-from ics import Calendar, Event
+from ics import Calendar
+from sequence import validate_sequence, write_sequence
 
 app = FastAPI()
 
@@ -14,41 +14,6 @@ def read_config(file_path: str):
     return config
 
 
-def validate_date(date_str: str, fallback: datetime) -> datetime:
-    try:
-        valid_date = datetime.strptime(date_str, "%Y-%m-%d")
-    except ValueError as e:
-        print(e)
-        print(f"Can't assign value {date_str}. Assinging fallback date {fallback}")
-        valid_date = fallback
-
-    return valid_date
-
-
-def validate_sequence(sequence: dict) -> dict:
-    if "start_date" not in sequence:
-        sequence["start_date"] = datetime.today()
-    else:
-        sequence["start_date"] = validate_date(sequence["start_date"], datetime.today())
-
-    if "end_date" not in sequence:
-        sequence["end_date"] = sequence["start_date"] + timedelta(days=365)
-    else:
-        date = validate_date(
-            sequence["end_date"], sequence["start_date"] + timedelta(days=365)
-        )
-        sequence["end_date"] = (
-            date
-            if date >= sequence["start_date"]
-            else sequence["start_date"] + timedelta(days=365)
-        )
-
-    if "recurrence_interval_days" not in sequence:
-        sequence["recurrence_interval_days"] = 1
-
-    return sequence
-
-
 def validate_config(config: dict) -> dict:
     if "calendar_name" not in config:
         config["calendar_name"] = "recurring_appointments"
@@ -57,30 +22,6 @@ def validate_config(config: dict) -> dict:
         sequence = validate_sequence(sequence)
 
     return config
-
-
-def write_sequence(sequence: dict, calendar: Calendar) -> Calendar:
-    appointment_names = sequence["appointment_names"]
-
-    start_date = sequence["start_date"]
-    end_date = sequence["end_date"]
-
-    recurrence = timedelta(days=sequence["recurrence_interval_days"])
-
-    current_date = start_date
-    index = 0
-
-    while current_date <= end_date:
-        event = Event()
-        event.name = appointment_names[index % len(appointment_names)]
-        event.begin = current_date
-        event.duration = timedelta(days=1)
-        calendar.events.add(event)
-
-        current_date += recurrence
-        index += 1
-
-    return calendar
 
 
 def generate_calendar_file(config: dict) -> str:
