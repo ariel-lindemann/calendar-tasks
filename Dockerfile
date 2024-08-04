@@ -4,5 +4,5 @@ COPY requirements.txt .
 RUN python3 -m pip install -r requirements.txt && \
     python3 -m pip install "fastapi[standard]"
 
-COPY calendar-tasks.py .
+COPY app/ .
 CMD ["fastapi", "run", "calendar-tasks.py", "--port", "8000"]
