@@ -53,7 +53,7 @@ def write_sequence(sequence: dict, calendar: Calendar) -> Calendar:
         event = Event()
         event.name = appointment_names[index % len(appointment_names)]
         event.begin = current_date
-        event.duration = timedelta(days=1)
+        event.make_all_day()
         calendar.events.add(event)
 
         current_date += recurrence
