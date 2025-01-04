@@ -18,7 +18,7 @@ cd calendar-tasks
 
 Install the dependencies:
 ```sh
-pip install -r requrements.txt
+pip install -r requirements.txt
 ```
 
 Run the API
