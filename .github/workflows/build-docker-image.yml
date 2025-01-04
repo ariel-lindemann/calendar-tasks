@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+    paths: 
+    - 'Dockerfile'
+    - 'requirements.txt'
+  pull_request:
+    branches: [ "master" ]
+    paths: 
+    - 'Dockerfile'
+    - 'requirements.txt'
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag calendar-tasks:$(date +%s)
