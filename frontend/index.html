@@ -51,6 +51,8 @@
     <button id="submit-btn">Generate Calendar</button>
 
     <script>
+        const baseUrl = window.location.origin;
+
         // Reference to the container that holds all sequence blocks
         const sequencesContainer = document.getElementById("sequences-container");
 
@@ -108,7 +110,7 @@
 
             // Send to endpoint
             try {
-                const response = await fetch("http://localhost:8000/generate_calendar/", {
+                const response = await fetch(baseUrl + "/generate_calendar/", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
