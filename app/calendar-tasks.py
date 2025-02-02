@@ -2,11 +2,22 @@ import json
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from ics import Calendar
 from sequence import validate_sequence, write_sequence
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 def read_config(file_path: str):
     with open(file_path, "r") as file:
