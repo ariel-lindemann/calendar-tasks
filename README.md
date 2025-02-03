@@ -37,6 +37,14 @@ docker run -p 8000:8000 calendar-tasks
 
 ## Usage
 
+### Web interface
+
+Assuming the app is running locally under port 8000, visit http://localhost:8000/frontend/index.html to access the web interface.
+
+Fill out the fields and then click **Generate Calendar** to download your `ics` file.
+
+### API
+
 Send a POST request to the `/generate_calendar` endpoint, with the following json body:
 ```json
 {
