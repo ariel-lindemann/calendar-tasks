@@ -3,7 +3,8 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from generate_calendar import generate_calendar_file
+from generate_calendar import generate_calendar_file, CalendarConfig
+from sequence import shift_by_days, Sequence
 
 app = FastAPI()
 
@@ -18,11 +19,11 @@ app.add_middleware(
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 
 @app.post("/generate_calendar/")
-async def generate_calendar(config: dict):
+async def generate_calendar(config: CalendarConfig):
     try:
         path = generate_calendar_file(config)
         return FileResponse(
-            path, media_type="text/calendar", filename=f"{config['calendar_name']}.ics"
+            path, media_type="text/calendar", filename=f"{config.calendar_name}.ics"
         )
 
     except RuntimeError as e:

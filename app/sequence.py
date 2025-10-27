@@ -1,50 +1,24 @@
 from datetime import datetime, timedelta
 
 from ics import Calendar, Event
+from pydantic import BaseModel
 
 
-def validate_date(date_str: str, fallback: datetime) -> datetime:
-    try:
-        valid_date = datetime.strptime(date_str, "%Y-%m-%d")
-    except ValueError as e:
-        print(e)
-        print(f"Can't assign value {date_str}. Assinging fallback date {fallback}")
-        valid_date = fallback
-
-    return valid_date
+class Sequence(BaseModel):
+    start_date: datetime = datetime.today()
+    end_date: datetime = datetime.today() + timedelta(days=365)
+    recurrence_interval_days: int = 1
+    appointment_names: list[str] = []
 
 
-def validate_sequence(sequence: dict) -> dict:
-    if "start_date" not in sequence:
-        sequence["start_date"] = datetime.today()
-    else:
-        sequence["start_date"] = validate_date(sequence["start_date"], datetime.today())
 
-    if "end_date" not in sequence:
-        sequence["end_date"] = sequence["start_date"] + timedelta(days=365)
-    else:
-        date = validate_date(
-            sequence["end_date"], sequence["start_date"] + timedelta(days=365)
-        )
-        sequence["end_date"] = (
-            date
-            if date >= sequence["start_date"]
-            else sequence["start_date"] + timedelta(days=365)
-        )
+def write_sequence(sequence: Sequence, calendar: Calendar) -> Calendar:
+    appointment_names = sequence.appointment_names
 
-    if "recurrence_interval_days" not in sequence:
-        sequence["recurrence_interval_days"] = 1
+    start_date = sequence.start_date
+    end_date = sequence.end_date
 
-    return sequence
-
-
-def write_sequence(sequence: dict, calendar: Calendar) -> Calendar:
-    appointment_names = sequence["appointment_names"]
-
-    start_date = sequence["start_date"]
-    end_date = sequence["end_date"]
-
-    recurrence = timedelta(days=sequence["recurrence_interval_days"])
+    recurrence = timedelta(days=sequence.recurrence_interval_days)
 
     current_date = start_date
     index = 0
