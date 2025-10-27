@@ -1,6 +1,14 @@
 from datetime import datetime, timedelta
 from pydantic import BaseModel, field_validator, model_validator
 
+class Event(BaseModel):
+    id: int | None = None
+    name: str
+    start_date: datetime
+    end_date: datetime
+    description: str | None = None
+    location: str | None = None
+
 class Sequence(BaseModel):
     start_date: datetime = datetime.today()
     end_date: datetime = datetime.today() + timedelta(days=365)
