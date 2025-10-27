@@ -1,6 +1,8 @@
 import json
 from ics import Calendar
 import ics
+import logging
+logger = logging.getLogger("uvicorn.app.export")
 
 from app.sequence import write_sequence
 from app.models import CalendarConfig, Event
@@ -17,7 +19,7 @@ def export_to_ical(calendar: Calendar, file_name: str):
     with open(file_path, "w") as file:
         file.writelines(calendar) # type: ignore
 
-    print(f"Calendar file {file_path} created successfully.")
+    logger.info(f"Calendar file {file_path} created successfully.")
 
     return file_path
 

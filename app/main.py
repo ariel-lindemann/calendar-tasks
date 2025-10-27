@@ -2,6 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
+import logging
+logger = logging.getLogger("uvicorn.app.main")
+logger.setLevel(logging.INFO)
+
 import app.routes as routes
 
 app = FastAPI()
