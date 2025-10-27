@@ -68,3 +68,24 @@ def delete_event(event_id: int):
 
     conn.commit()
     conn.close()
+
+def get_all_events() -> list[Event]:
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT id, name, start_date, end_date, description, location FROM events")
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    events = []
+    for row in rows:
+        events.append(Event(
+            id=row[0],
+            name=row[1],
+            start_date=row[2],
+            end_date=row[3],
+            description=row[4],
+            location=row[5]
+        ))
+    return events

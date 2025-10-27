@@ -3,8 +3,8 @@ from fastapi.routing import APIRouter
 from fastapi.responses import FileResponse
 
 from app.models import CalendarConfig, Event
-from app.generate_calendar import generate_calendar_file
-from app.persistence import delete_event, get_event_by_id, save_event, update_event
+from app.generate_calendar import generate_calendar_file, generate_calendar_from_events
+from app.persistence import delete_event, get_event_by_id, save_event, update_event, get_all_events
     
 router = APIRouter()
 
@@ -46,3 +46,15 @@ async def delete_event_endpoint(event_id: int):
         raise HTTPException(status_code=404, detail="Event not found")
     delete_event(event_id)
     return {"message": "Event deleted successfully"}
+
+@router.get("/export/")
+async def export_all_events():
+    try:
+        events = get_all_events()
+        path = generate_calendar_from_events(events, "events_calendar")
+        return FileResponse(
+            path, media_type="text/calendar", filename=path
+        )
+
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=str(e))
