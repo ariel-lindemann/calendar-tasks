@@ -66,7 +66,7 @@ Send a POST request to the `/generate_calendar` endpoint, with the following jso
                 "Appointment 3"
             ],
             "start_date": "2024-10-02",
-            "end_date": "2024-09-31",
+            "end_date": "2024-09-30",
             "recurrence_interval_days": 7
         }
     ]
@@ -96,7 +96,7 @@ curl -X POST "http://localhost:8000/generate_calendar/" -H "Content-Type: applic
                 "Appointment 3"
             ],
             "start_date": "2024-10-02",
-            "end_date": "2024-09-31",
+            "end_date": "2024-09-30",
             "recurrence_interval_days": 7
         }
     ]
