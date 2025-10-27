@@ -9,6 +9,12 @@ class Event(BaseModel):
     description: str | None = None
     location: str | None = None
 
+    @model_validator(mode="after")
+    def end_must_be_after_start(self):
+        if self.end_date <= self.start_date:
+            raise ValueError("end_date must be after start_date")
+        return self
+
 class Sequence(BaseModel):
     start_date: datetime = datetime.today()
     end_date: datetime = datetime.today() + timedelta(days=365)
