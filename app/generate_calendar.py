@@ -1,12 +1,8 @@
 import json
 from ics import Calendar
-from pydantic import BaseModel
 
-from app.sequence import write_sequence, Sequence
-
-class CalendarConfig(BaseModel):
-    calendar_name: str = "recurring_appointments"
-    sequences: list[Sequence] = []
+from app.sequence import write_sequence
+from app.models import CalendarConfig
 
 def read_config(file_path: str) -> CalendarConfig:
     with open(file_path, "r") as file:

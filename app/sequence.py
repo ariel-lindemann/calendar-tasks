@@ -1,15 +1,7 @@
-from datetime import datetime, timedelta
-
+from datetime import timedelta
 from ics import Calendar, Event
-from pydantic import BaseModel
 
-
-class Sequence(BaseModel):
-    start_date: datetime = datetime.today()
-    end_date: datetime = datetime.today() + timedelta(days=365)
-    recurrence_interval_days: int = 1
-    appointment_names: list[str] = []
-
+from app.models import Sequence
 
 
 def write_sequence(sequence: Sequence, calendar: Calendar) -> Calendar:
