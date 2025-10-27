@@ -3,8 +3,7 @@ from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from generate_calendar import generate_calendar_file, CalendarConfig
-from sequence import shift_by_days, Sequence
+from app.generate_calendar import generate_calendar_file, CalendarConfig
 
 app = FastAPI()
 

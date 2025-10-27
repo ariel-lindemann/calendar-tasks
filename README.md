@@ -23,7 +23,7 @@ uv sync
 
 Run the API
 ```sh
-fastapi run app/calendar-tasks.py
+fastapi run
 ```
 
 ### Docker

@@ -1,8 +1,8 @@
 import json
-
 from ics import Calendar
-from sequence import write_sequence, Sequence
 from pydantic import BaseModel
+
+from app.sequence import write_sequence, Sequence
 
 class CalendarConfig(BaseModel):
     calendar_name: str = "recurring_appointments"

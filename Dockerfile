@@ -11,4 +11,4 @@ COPY app/ app/
 COPY frontend/ frontend/
 RUN uv sync
 
-CMD [".venv/bin/fastapi", "run", "app/calendar-tasks.py", "--port", "8000"]
+CMD [".venv/bin/fastapi", "run", "--port", "8000"]
