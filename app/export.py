@@ -22,7 +22,7 @@ def export_to_ical(calendar: Calendar, file_name: str):
     return file_path
 
 
-def generate_calendar_from_events(events: list[Event], file_name: str) -> str:
+def from_events(events: list[Event], file_name: str) -> str:
     calendar = Calendar()
     for event in events:
         cal_event = ics.Event()
@@ -33,7 +33,7 @@ def generate_calendar_from_events(events: list[Event], file_name: str) -> str:
     return export_to_ical(calendar, file_name)
 
 
-def generate_calendar_file(config: CalendarConfig) -> str:
+def from_calendar_config(config: CalendarConfig) -> str:
 
     calendar = Calendar()
 

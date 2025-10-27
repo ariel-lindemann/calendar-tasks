@@ -3,15 +3,15 @@ from fastapi.routing import APIRouter
 from fastapi.responses import FileResponse
 
 from app.models import CalendarConfig, Event
-from app.generate_calendar import generate_calendar_file, generate_calendar_from_events
-from app.persistence import delete_event, get_event_by_id, save_event, update_event, get_all_events
+import app.export as export
+import app.persistence as persistence
     
 router = APIRouter()
 
 @router.post("/generate_calendar/")
 async def generate_calendar(config: CalendarConfig):
     try:
-        path = generate_calendar_file(config)
+        path = export.from_calendar_config(config)
         return FileResponse(
             path, media_type="text/calendar", filename=f"{config.calendar_name}.ics"
         )
@@ -21,37 +21,37 @@ async def generate_calendar(config: CalendarConfig):
 
 @router.post("/events/")
 async def create_event(event: Event):
-    save_event(event)
+    persistence.save_event(event)
     return {"message": "Event created successfully"}
 
 @router.get("/events/{event_id}")
 async def read_event(event_id: int):
-    event = get_event_by_id(event_id)
+    event = persistence.get_event_by_id(event_id)
     if event is None:
         raise HTTPException(status_code=404, detail="Event not found")
     return event
 
 @router.put("/events/{event_id}")
 async def update_event_endpoint(event_id: int, event: Event):
-    existing_event = get_event_by_id(event_id)
+    existing_event = persistence.get_event_by_id(event_id)
     if existing_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-    update_event(event_id, event)
+    persistence.update_event(event_id, event)
     return {"message": "Event updated successfully"}
 
 @router.delete("/events/{event_id}")
 async def delete_event_endpoint(event_id: int):
-    existing_event = get_event_by_id(event_id)
+    existing_event = persistence.get_event_by_id(event_id)
     if existing_event is None:
         raise HTTPException(status_code=404, detail="Event not found")
-    delete_event(event_id)
+    persistence.delete_event(event_id)
     return {"message": "Event deleted successfully"}
 
 @router.get("/export/")
 async def export_all_events():
     try:
-        events = get_all_events()
-        path = generate_calendar_from_events(events, "events_calendar")
+        events = persistence.get_all_events()
+        path = export.from_events(events, "events_calendar")
         return FileResponse(
             path, media_type="text/calendar", filename=path
         )
