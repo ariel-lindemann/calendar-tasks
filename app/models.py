@@ -11,7 +11,7 @@ class Event(BaseModel):
 
     @model_validator(mode="after")
     def end_must_be_after_start(self):
-        if self.end_date <= self.start_date:
+        if self.end_date < self.start_date:
             raise ValueError("end_date must be after start_date")
         return self
 
