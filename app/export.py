@@ -52,7 +52,7 @@ def write_sequence(sequence: Sequence, calendar: ical.Calendar) -> ical.Calendar
         event = ical.Event()
         event.add("summary", appointment_names[index % len(appointment_names)])
         # if only date is passed, it is considered all-day
-        event.add("start", current_date.date()) 
+        event.add("dtstart", current_date.date())
         calendar.add_component(event)
 
         current_date += recurrence
