@@ -1,10 +1,22 @@
 import json
-import ics
-from datetime import timedelta
+import icalendar as ical
+from datetime import timedelta, date
 import logging
 logger = logging.getLogger("uvicorn.app.export")
 
 from app.models import CalendarConfig, Event, Sequence
+
+def cal_from_events(events: list[Event]) -> ical.Calendar:
+    calendar = ical.Calendar()
+    calendar.add("version", "2.0")
+    calendar.add("prodid", "-//Ariel Lindemann//calendar-tasks//EN")
+    for event in events:
+        cal_event = ical.Event()
+        cal_event.add("summary", event.name)
+        cal_event.add("dtstart", event.start_date)
+        cal_event.add("dtend", event.end_date)
+        calendar.add_component(cal_event)
+    return calendar
 
 def read_config(file_path: str) -> CalendarConfig:
     with open(file_path, "r") as file:
@@ -12,11 +24,11 @@ def read_config(file_path: str) -> CalendarConfig:
     return config
 
 
-def export_to_ical(calendar: ics.Calendar, file_name: str):
+def create_ical_file(calendar: ical.Calendar, file_name: str):
     file_path = f"{file_name}.ics"
 
     with open(file_path, "w") as file:
-        file.writelines(calendar) # type: ignore
+        file.write(calendar.to_ical().decode("utf-8"))
 
     logger.info(f"Calendar file {file_path} created successfully.")
 
@@ -24,16 +36,10 @@ def export_to_ical(calendar: ics.Calendar, file_name: str):
 
 
 def from_events(events: list[Event], file_name: str) -> str:
-    calendar = ics.Calendar()
-    for event in events:
-        cal_event = ics.Event()
-        cal_event.name = event.name
-        cal_event.begin = event.start_date
-        cal_event.end = event.end_date
-        calendar.events.add(cal_event)
-    return export_to_ical(calendar, file_name)
+    return create_ical_file(cal_from_events(events), file_name)
 
-def write_sequence(sequence: Sequence, calendar: ics.Calendar) -> ics.Calendar:
+
+def write_sequence(sequence: Sequence, calendar: ical.Calendar) -> ical.Calendar:
     appointment_names = sequence.appointment_names
 
     start_date = sequence.start_date
@@ -45,11 +51,11 @@ def write_sequence(sequence: Sequence, calendar: ics.Calendar) -> ics.Calendar:
     index = 0
 
     while current_date <= end_date:
-        event = ics.Event()
-        event.name = appointment_names[index % len(appointment_names)]
-        event.begin = current_date
-        event.make_all_day()
-        calendar.events.add(event)
+        event = ical.Event()
+        event.add("summary", appointment_names[index % len(appointment_names)])
+        # if only date is passed, it is considered all-day
+        event.add("begin", current_date.date) 
+        calendar.add_component(event)
 
         current_date += recurrence
         index += 1
@@ -57,9 +63,7 @@ def write_sequence(sequence: Sequence, calendar: ics.Calendar) -> ics.Calendar:
     return calendar
 
 def from_calendar_config(config: CalendarConfig) -> str:
-    calendar = ics.Calendar()
-
     for sequence in config.sequences:
-        calendar = write_sequence(sequence, calendar)
+        calendar = write_sequence(sequence, ical.Calendar())
 
-    return export_to_ical(calendar, config.calendar_name)
+    return create_ical_file(calendar, config.calendar_name)

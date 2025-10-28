@@ -7,6 +7,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]",
     "holidays",
-    "ics",
-    "pydantic"
+    "icalendar",
+    "pydantic",
+    "pytest",
 ]
