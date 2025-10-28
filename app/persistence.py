@@ -22,7 +22,7 @@ def save_event(event: Event):
     cursor.execute("""
         INSERT INTO events (name, start_date, end_date, description, location)
         VALUES (?, ?, ?, ?, ?)
-    """, (event.name, event.start_date, event.end_date, event.description, event.location))
+    """, (event.name, event.start_date.isoformat(), event.end_date.isoformat(), event.description, event.location))
 
     conn.commit()
     conn.close()
@@ -55,7 +55,7 @@ def update_event(event_id: int, event: Event):
         UPDATE events
         SET name = ?, start_date = ?, end_date = ?, description = ?, location = ?
         WHERE id = ?
-    """, (event.name, event.start_date, event.end_date, event.description, event.location, event_id))
+    """, (event.name, event.start_date.isoformat(), event.end_date.isoformat(), event.description, event.location, event_id))
 
     conn.commit()
     conn.close()
