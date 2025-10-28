@@ -1,4 +1,4 @@
-FROM python:3.13.5-slim
+FROM python:3.13.9-slim
 
 RUN apt-get update && apt-get install -y curl && apt-get clean
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
