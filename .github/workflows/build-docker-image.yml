@@ -2,23 +2,26 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
-    paths: 
-    - 'Dockerfile'
-    - 'requirements.txt'
+    branches: ["master"]
+    paths:
+      - "Dockerfile"
+      - "uv.lock"
+      - "pyproject.toml"
   pull_request:
-    branches: [ "master" ]
-    paths: 
-    - 'Dockerfile'
-    - 'requirements.txt'
+    branches: ["master"]
+    paths:
+      - "Dockerfile"
+      - "uv.lock"
+      - "pyproject.toml"
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag calendar-tasks:$(date +%s)
+      - uses: actions/checkout@v5
+      - name: Get Project Version
+        id: project_version
+        run: echo "::set-output name=VERSION::$(grep -Po '(?<=^version = ")[^"]*' pyproject.toml)"
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag calendar-tasks:${{ steps.project_version.outputs.VERSION }}
