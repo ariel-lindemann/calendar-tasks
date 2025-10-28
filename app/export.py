@@ -67,7 +67,9 @@ def write_sequence(sequence: Sequence, calendar: ical.Calendar) -> ical.Calendar
     return calendar
 
 def from_calendar_config(config: CalendarConfig) -> str:
+    calendar = basic_calendar()
+
     for sequence in config.sequences:
-        calendar = write_sequence(sequence, basic_calendar())
+        calendar = write_sequence(sequence, calendar)
 
     return create_ical_file(calendar, config.calendar_name)
