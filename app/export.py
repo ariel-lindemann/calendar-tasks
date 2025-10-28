@@ -6,10 +6,14 @@ logger = logging.getLogger("uvicorn.app.export")
 
 from app.models import CalendarConfig, Event, Sequence
 
-def cal_from_events(events: list[Event]) -> ical.Calendar:
+def basic_calendar() -> ical.Calendar:
     calendar = ical.Calendar()
     calendar.add("version", "2.0")
     calendar.add("prodid", "-//Ariel Lindemann//calendar-tasks//EN")
+    return calendar
+
+def cal_from_events(events: list[Event]) -> ical.Calendar:
+    calendar = basic_calendar()
     for event in events:
         cal_event = ical.Event()
         cal_event.add("summary", event.name)
@@ -54,7 +58,7 @@ def write_sequence(sequence: Sequence, calendar: ical.Calendar) -> ical.Calendar
         event = ical.Event()
         event.add("summary", appointment_names[index % len(appointment_names)])
         # if only date is passed, it is considered all-day
-        event.add("begin", current_date.date) 
+        event.add("start", current_date.date()) 
         calendar.add_component(event)
 
         current_date += recurrence
@@ -64,6 +68,6 @@ def write_sequence(sequence: Sequence, calendar: ical.Calendar) -> ical.Calendar
 
 def from_calendar_config(config: CalendarConfig) -> str:
     for sequence in config.sequences:
-        calendar = write_sequence(sequence, ical.Calendar())
+        calendar = write_sequence(sequence, basic_calendar())
 
     return create_ical_file(calendar, config.calendar_name)
