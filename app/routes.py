@@ -6,6 +6,9 @@ from app.models import CalendarConfig, Event
 import app.export as export
 import app.persistence as persistence
 from app.version import get_version
+
+import logging
+logger = logging.getLogger("uvicorn.app.routes")
     
 router = APIRouter()
 
@@ -30,6 +33,7 @@ async def create_events(events: list[Event]):
         for event in events:
             persistence.save_event(event)
     except Exception as e:
+        logger.error(f"Error saving event: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "Event created successfully"}
