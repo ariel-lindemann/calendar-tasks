@@ -7,8 +7,12 @@ logger = logging.getLogger("uvicorn.app.main")
 logger.setLevel(logging.INFO)
 
 import app.routes as routes
+from app.version import get_version
 
-app = FastAPI()
+app = FastAPI(
+    title = "calendar-tasks",
+    version = get_version(),
+)
 
 app.add_middleware(
     CORSMiddleware,

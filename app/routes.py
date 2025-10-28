@@ -5,8 +5,13 @@ from fastapi.responses import FileResponse
 from app.models import CalendarConfig, Event
 import app.export as export
 import app.persistence as persistence
+from app.version import get_version
     
 router = APIRouter()
+
+@router.get("/version")
+async def get_version_endpoint():
+    return {"version": get_version()}
 
 @router.post("/generate_calendar/")
 async def generate_calendar(config: CalendarConfig):
