@@ -1,6 +1,5 @@
-import json
 import icalendar as ical
-from datetime import timedelta, date
+from datetime import timedelta
 import logging
 logger = logging.getLogger("uvicorn.app.export")
 
@@ -21,11 +20,6 @@ def cal_from_events(events: list[Event]) -> ical.Calendar:
         cal_event.add("dtend", event.end_date)
         calendar.add_component(cal_event)
     return calendar
-
-def read_config(file_path: str) -> CalendarConfig:
-    with open(file_path, "r") as file:
-        config = json.load(file)
-    return config
 
 
 def create_ical_file(calendar: ical.Calendar, file_name: str):
