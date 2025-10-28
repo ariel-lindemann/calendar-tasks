@@ -10,4 +10,5 @@ dependencies = [
     "icalendar",
     "pydantic",
     "pytest",
+    "python-dateutil",
 ]
