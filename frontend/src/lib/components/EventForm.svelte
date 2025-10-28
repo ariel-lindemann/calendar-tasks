@@ -58,42 +58,42 @@
 </script>
 
 <div class="event-form">
-	<h2>New Event</h2>
+	<h3>New Event</h3>
 	<form>
 		<label>
 			Name:
 			<input type="text" name="name" bind:value={name} required />
 		</label>
-		<br />
+
 		<label>
 			Start Date:
 			<input type="datetime-local" name="start_date" bind:value={start_date} required />
 		</label>
-		<br />
+
 		<label>
 			End Date:
 			<input type="datetime-local" name="end_date" bind:value={end_date} required />
 		</label>
-		<br />
+
 		<label>
 			Description:
 			<textarea name="description" bind:value={description}></textarea>
 		</label>
-		<br />
+
 		<label>
 			Location:
 			<input type="text" name="location" bind:value={location} />
 		</label>
-		<br />
+
 		<label>
 			Recurrence:
 			<input type="text" name="recurrence" bind:value={recurrence} />
 		</label>
-		<br />
+
 		<button type="submit" onclick={handleSubmit}>Create Event</button>
 		{#if showError}
 			<div class="error-message">
-				<p>{errorMessage}</p>
+				{errorMessage}
 			</div>
 		{/if}
 	</form>

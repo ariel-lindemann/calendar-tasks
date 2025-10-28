@@ -68,7 +68,7 @@
 {#if !showEditPopup}
 	<div class="event-view">
 		<h3>{event.name}</h3>
-		<p>{event.start_date.toLocaleString()} - {event.end_date.toLocaleString()}</p>
+		<p>{event.start_date.toLocaleString()} - <br /> {event.end_date.toLocaleString()}</p>
 		{#if event.description}
 			<p><strong>Description:</strong> <br /> {event.description}</p>
 		{/if}
@@ -108,24 +108,4 @@
 {/if}
 
 <style>
-	.event-view {
-		border: 2px solid #ccc;
-		margin-bottom: 10px;
-		background-color: #f9f9f9;
-		width: 200px;
-	}
-	.event-view h3 {
-		margin: 0 0 10px 0;
-		font-size: larger;
-	}
-	.event-view p {
-		word-wrap: break-word;
-		overflow-wrap: break-word;
-		word-break: break-all;
-	}
-	.error-message {
-		color: red;
-		font-weight: bold;
-		margin-top: 10px;
-	}
 </style>

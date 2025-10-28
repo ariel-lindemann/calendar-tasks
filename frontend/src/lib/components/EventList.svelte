@@ -10,14 +10,3 @@
 		<EventView {event} {onEventChanged} />
 	{/each}
 </div>
-
-<style>
-	.event-list {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		gap: 15px;
-		border: 2px solid #ddd;
-		width: fit-content;
-	}
-</style>
