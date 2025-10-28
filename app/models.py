@@ -29,6 +29,18 @@ class Event(BaseModel):
             raise ValueError("end_date must be after start_date")
         return self
 
+    def is_between(self, start: datetime, end: datetime) -> bool:
+        '''
+        Check if the event is within a specific time range
+        (including recurrences)
+        '''
+        if not self.recurrence:
+            return self.start_date >= start and self.end_date <= end
+        else:
+            rule = rrulestr(self.recurrence, dtstart=self.start_date)
+            occurrences = rule.between(after=start, before=end, inc=True)
+            return len(occurrences) > 0
+
 class Sequence(BaseModel):
     start_date: datetime = datetime.today()
     end_date: datetime = datetime.today() + timedelta(days=365)
