@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from dateutil.rrule import rrulestr
 from pydantic import BaseModel, field_validator, model_validator
 
 class Event(BaseModel):
@@ -8,6 +9,19 @@ class Event(BaseModel):
     end_date: datetime
     description: str | None = None
     location: str | None = None
+    recurrence: str | None = None
+
+    @field_validator("recurrence")
+    def recurrence_parsed(cls, v):
+        if not v:
+            return None
+        try:
+            # see if we can parse it but keep as str for storage
+            if rrulestr(v):
+                return v
+        except Exception as e:
+            raise ValueError(f"Invalid rrule string: {e}")
+        return None
 
     @model_validator(mode="after")
     def end_must_be_after_start(self):
