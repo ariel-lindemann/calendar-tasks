@@ -25,8 +25,13 @@ async def generate_calendar(config: CalendarConfig):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/events/")
-async def create_event(event: Event):
-    persistence.save_event(event)
+async def create_events(events: list[Event]):
+    try:
+        for event in events:
+            persistence.save_event(event)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
     return {"message": "Event created successfully"}
 
 @router.get("/events/{event_id}")
