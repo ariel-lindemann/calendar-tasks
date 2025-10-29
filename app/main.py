@@ -7,6 +7,7 @@ logger = logging.getLogger("uvicorn.app.main")
 logger.setLevel(logging.INFO)
 
 import app.routes as routes
+from app.persistence import init_db
 from app.version import get_version
 
 app = FastAPI(
@@ -31,3 +32,5 @@ def read_root():
     return {
         "message": "Welcome to the Recurring Appointments Calendar API! Use the /generate-calendar endpoint to generate a calendar file."
     }
+
+init_db()

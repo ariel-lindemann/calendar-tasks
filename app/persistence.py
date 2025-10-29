@@ -6,22 +6,31 @@ from app.models import Event
 
 db_path = "events.db"
 
+def init_db():
+    logger.info("Initializing events database ...")
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS events (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            start_date TEXT NOT NULL,
+            end_date TEXT NOT NULL,
+            description TEXT,
+            location TEXT,
+            recurrence TEXT
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+    logger.info("Events database initialized.")
+
 def save_event(event: Event):
     try:
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS events (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT NOT NULL,
-                start_date TEXT NOT NULL,
-                end_date TEXT NOT NULL,
-                description TEXT,
-                location TEXT,
-                recurrence TEXT
-            )
-        """)
 
         cursor.execute("""
             INSERT INTO events (name, start_date, end_date, description, location, recurrence)
