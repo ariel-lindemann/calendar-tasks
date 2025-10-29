@@ -1,6 +1,6 @@
 import type { Event } from '$lib/types';
 
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9000';
 
 export async function createEvents(events: Array<Event>): Promise<boolean> {
     try {

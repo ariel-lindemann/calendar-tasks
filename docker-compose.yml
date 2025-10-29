@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    container_name: calendar-tasks
+    ports:
+      - "9000:8000"
+    networks:
+      - calendar-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: calendar-tasks-frontend
+    ports:
+      - "2910:3000"
+    networks:
+      - calendar-network
+    depends_on:
+      - app
+
+networks:
+  calendar-network:
+    driver: bridge
