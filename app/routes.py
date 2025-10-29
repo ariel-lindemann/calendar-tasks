@@ -38,6 +38,13 @@ async def create_events(events: list[Event]):
 
     return {"message": "Event created successfully"}
 
+# TODO add filters
+# TODO pagination
+@router.get("/events/")
+async def read_events():
+    events = persistence.get_all_events()
+    return events
+
 @router.get("/events/{event_id}")
 async def read_event(event_id: int):
     event = persistence.get_event_by_id(event_id)
