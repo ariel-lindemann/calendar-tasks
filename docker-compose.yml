@@ -13,7 +13,7 @@ services:
       dockerfile: Dockerfile
     container_name: calendar-tasks-frontend
     ports:
-      - "2910:3000"
+      - "2910:80"
     networks:
       - calendar-network
     depends_on:
