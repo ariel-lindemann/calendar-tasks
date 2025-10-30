@@ -45,14 +45,14 @@ async def read_events():
     events = persistence.get_all_events()
     return events
 
-@router.get("/events/{event_id}")
+@router.get("/events/{event_id}/")
 async def read_event(event_id: int):
     event = persistence.get_event_by_id(event_id)
     if event is None:
         raise HTTPException(status_code=404, detail="Event not found")
     return event
 
-@router.put("/events/{event_id}")
+@router.put("/events/{event_id}/")
 async def update_event_endpoint(event_id: int, event: Event):
     existing_event = persistence.get_event_by_id(event_id)
     if existing_event is None:
@@ -60,7 +60,7 @@ async def update_event_endpoint(event_id: int, event: Event):
     persistence.update_event(event_id, event)
     return {"message": "Event updated successfully"}
 
-@router.delete("/events/{event_id}")
+@router.delete("/events/{event_id}/")
 async def delete_event_endpoint(event_id: int):
     existing_event = persistence.get_event_by_id(event_id)
     if existing_event is None:
