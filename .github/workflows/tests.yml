@@ -3,12 +3,14 @@ on:
     push:
         branches: ["master"]
         paths:
+            - ".github/workflows/tests.yml"
             - "app/**"
             - "tests/**"
             - "pyproject.toml"
     pull_request:
         branches: ["master"]
         paths:
+            - ".github/workflows/tests.yml"
             - "app/**"
             - "tests/**"
             - "pyproject.toml"
