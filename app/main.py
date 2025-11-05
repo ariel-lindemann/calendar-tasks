@@ -33,4 +33,8 @@ def read_root():
         "message": "Welcome to the Recurring Appointments Calendar API! Use the /generate-calendar endpoint to generate a calendar file."
     }
 
+@app.get("/version")
+async def get_version_endpoint():
+    return {"version": app.version}
+
 init_db()

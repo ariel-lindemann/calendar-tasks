@@ -5,16 +5,11 @@ from fastapi.responses import FileResponse
 from app.models import CalendarConfig, Event
 import app.export as export
 import app.persistence as persistence
-from app.version import get_version
 
 import logging
 logger = logging.getLogger("uvicorn.app.routes")
     
 router = APIRouter()
-
-@router.get("/version")
-async def get_version_endpoint():
-    return {"version": get_version()}
 
 @router.post("/generate_calendar/")
 async def generate_calendar(config: CalendarConfig):
@@ -23,7 +18,6 @@ async def generate_calendar(config: CalendarConfig):
         return FileResponse(
             path, media_type="text/calendar", filename=f"{config.calendar_name}.ics"
         )
-
     except RuntimeError as e:
         raise HTTPException(status_code=500, detail=str(e))
 

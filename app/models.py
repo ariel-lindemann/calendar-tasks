@@ -6,7 +6,7 @@ class Event(BaseModel):
     id: int | None = None
     name: str
     start_date: datetime
-    end_date: datetime
+    end_date: datetime # TODO depending on all-day or recurring could be empty
     description: str | None = None
     location: str | None = None
     recurrence: str | None = None
