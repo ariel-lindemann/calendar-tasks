@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Event } from '$lib/types';
+	import RecurrenceForm from './RecurrenceForm.svelte';
 
 	// Accept a function prop for handling submission
 	let {
@@ -92,6 +93,7 @@
 
 		<label>
 			Recurrence:
+			<RecurrenceForm bind:recurrenceRule={recurrence} />
 			<input type="text" name="recurrence" bind:value={recurrence} />
 		</label>
 
