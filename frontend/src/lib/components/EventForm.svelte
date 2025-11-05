@@ -4,8 +4,13 @@
 	// Accept a function prop for handling submission
 	let {
 		onSubmit,
+		onCancel,
 		onEventChanged
-	}: { onSubmit: (event: Array<Event>) => Promise<boolean>; onEventChanged: () => void } = $props();
+	}: {
+		onSubmit: (event: Array<Event>) => Promise<boolean>;
+		onCancel: () => void;
+		onEventChanged: () => void;
+	} = $props();
 
 	let showError: boolean = $state(false);
 	let errorMessage: string = $state('');
@@ -91,6 +96,7 @@
 		</label>
 
 		<button type="submit" onclick={handleSubmit}>Create Event</button>
+		<button onclick={onCancel}>Cancel</button>
 		{#if showError}
 			<div class="error-message">
 				{errorMessage}

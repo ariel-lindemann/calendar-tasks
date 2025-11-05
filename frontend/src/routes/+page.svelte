@@ -8,6 +8,7 @@
 	let events: Event[] = $state([]);
 	let loading = $state(false);
 	let error = $state('');
+	let showForm = $state(false);
 
 	async function onEventChanged() {
 		loading = true;
@@ -23,7 +24,23 @@
 
 <h1>Calendar Tasks</h1>
 
-<EventForm onSubmit={createEvents} {onEventChanged} />
+<button onclick={() => (showForm = true)}>Add Event</button>
+
+{#if showForm}
+	<div class="modal">
+		<div class="modal-content">
+			<EventForm
+				onSubmit={async (event: Array<Event>) => {
+					let success = await createEvents(event);
+					showForm = false;
+					return success;
+				}}
+				onCancel={() => (showForm = false)}
+				{onEventChanged}
+			/>
+		</div>
+	</div>
+{/if}
 
 <button onclick={onEventChanged}>
 	{loading ? 'Loading...' : 'Load Events from Backend'}
