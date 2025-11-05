@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Event } from '$lib/types';
 	import { updateEvent, deleteEvent } from '$lib/event_crud';
+	import RecurrenceForm from './RecurrenceForm.svelte';
 
 	let { event, onEventChanged }: { event: Event; onEventChanged: () => void } = $props();
 	let showEditPopup: boolean = $state(false);
@@ -96,6 +97,8 @@
 		<input type="datetime-local" bind:value={endDateInput} />
 		<textarea bind:value={editedEvent.description}></textarea>
 		<input type="text" bind:value={editedEvent.location} />
+		Recurrence:
+		<RecurrenceForm bind:recurrenceRule={editedEvent.recurrence} />
 		<input type="text" bind:value={editedEvent.recurrence} />
 		<button onclick={saveEdit}>Save</button>
 		<button onclick={cancelEdit}>Cancel</button>
