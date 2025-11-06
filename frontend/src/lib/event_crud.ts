@@ -2,7 +2,7 @@ import type { Event } from '$lib/types';
 
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:9000';
 
-export async function createEvents(events: Array<Event>): Promise<boolean> {
+export async function createEvents(events: Array<Event>): Promise<[boolean, string?]> {
     try {
         const response = await fetch(`${BASE_URL}/events/`, {
             method: 'POST',
@@ -16,12 +16,17 @@ export async function createEvents(events: Array<Event>): Promise<boolean> {
             })))
         });
         if (!response.ok) {
-            throw new Error(`Failed to create event: ${response.statusText}`);
+            if (response.status === 422) {
+                const errorData = await response.json();
+                const msg = errorData.detail[0].msg || 'Invalid event data.';
+                return [false, msg];
+            }
+            return [false, `Failed to create event: ${response.statusText}`];
         }
-        return true;
+        return [true];
     } catch (err) {
         console.error('Error creating event:', err);
-        return false;
+        return [false, 'An unexpected error occurred. Please try again.'];
     }
 }
 
@@ -38,10 +43,10 @@ export async function readEvents(): Promise<Array<Event>> {
         end_date: new Date(event.end_date)
     }));
 }
-export async function updateEvent(updatedEvent: Event, id?: number): Promise<boolean> {
+export async function updateEvent(updatedEvent: Event, id?: number): Promise<[boolean, string?]> {
     if (id === undefined) {
         console.error('Event ID is undefined. Cannot update event.');
-        return false;
+        return [false, 'Event ID is undefined.'];
     }
     try {
         const response = await fetch(`${BASE_URL}/events/${id}/`, {
@@ -56,12 +61,19 @@ export async function updateEvent(updatedEvent: Event, id?: number): Promise<boo
             })
         });
         if (!response.ok) {
-            throw new Error(`Failed to update event: ${response.statusText}`);
+            if (response.status === 422) {
+                const errorData = await response.json();
+                const msg = errorData.detail[0].msg || 'Invalid event data.';
+                return [false, msg];
+            }
+            const errorText = 'Failed to update event. Status: ' + response.status;
+            console.error(errorText);
+            return [false, errorText];
         }
-        return true;
+        return [true];
     } catch (err) {
         console.error('Error updating event:', err);
-        return false;
+        return [false, 'An unexpected error occurred. Please try again.'];
     }
 }
 export async function deleteEvent(id: number | undefined): Promise<boolean> {

@@ -28,7 +28,7 @@
 	async function saveEdit() {
 		editedEvent.start_date = new Date(startDateInput);
 		editedEvent.end_date = new Date(endDateInput);
-		const success = await updateEvent(editedEvent, event.id);
+		const [success, errorMessage] = await updateEvent(editedEvent, event.id);
 		if (success) {
 			event = {
 				...editedEvent
@@ -36,7 +36,7 @@
 			onEventChanged?.();
 			showEditPopup = false;
 		} else {
-			showErrorMessage('Failed to update event. Please try again.');
+			showErrorMessage(errorMessage || 'Failed to update event. Please try again.');
 		}
 	}
 

@@ -8,7 +8,7 @@
 		onCancel,
 		onEventChanged
 	}: {
-		onSubmit: (event: Array<Event>) => Promise<boolean>;
+		onSubmit: (event: Array<Event>) => Promise<[boolean, string?]>;
 		onCancel: () => void;
 		onEventChanged: () => void;
 	} = $props();
@@ -46,7 +46,7 @@
 			recurrence: recurrence || undefined
 		};
 
-		let success = await onSubmit([event]);
+		let [success, errorMessage] = await onSubmit([event]);
 
 		if (success) {
 			// Clear form after submission
@@ -58,7 +58,7 @@
 			recurrence = '';
 			onEventChanged?.();
 		} else {
-			showErrorMessage('Failed to create event. Please try again.');
+			showErrorMessage(errorMessage || 'Failed to create event. Please try again.');
 		}
 	}
 </script>

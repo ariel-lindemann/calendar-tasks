@@ -31,9 +31,11 @@
 		<div class="modal-content">
 			<EventForm
 				onSubmit={async (event: Array<Event>) => {
-					let success = await createEvents(event);
-					showForm = false;
-					return success;
+					let [success, errorMessage] = await createEvents(event);
+					if (success) {
+						showForm = false;
+					}
+					return [success, errorMessage];
 				}}
 				onCancel={() => (showForm = false)}
 				{onEventChanged}
